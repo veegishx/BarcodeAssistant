@@ -1,20 +1,23 @@
-package com.example.BarcodeAssistant;
+package com.example.itemselector;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.BarcodeAssistant.Database.DatabaseHelper;
+import com.example.itemselector.Database.DatabaseHelper;
 
 public class SignIn extends AppCompatActivity {
     private EditText usernameEditText, passwordEditText;
     private Button signInBtn, getStartedBtn;
     private DatabaseHelper db;
+    private final String PREFERENCE_FILE = "PreferenceFile";
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +46,17 @@ public class SignIn extends AppCompatActivity {
                 String user = usernameEditText.getText().toString().trim();
                 String pwd = passwordEditText.getText().toString().trim();
                 Boolean res = db.checkUser(user, pwd);
-                if(res == true)
-                {
-                    Intent HomePage = new Intent(SignIn.this,MainActivity.class);
+                sharedPreferences = getSharedPreferences(PREFERENCE_FILE, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                if(res){
+                    editor.putBoolean("session", true);
+                    editor.apply();
+                    Intent HomePage = new Intent(SignIn.this, MainActivity.class);
                     startActivity(HomePage);
                 }
-                else
-                {
+                else{
+                    editor.putBoolean("session", false);
+                    editor.apply();
                     Toast.makeText(SignIn.this,"Login Error",Toast.LENGTH_SHORT).show();
                 }
             }
