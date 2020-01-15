@@ -1,33 +1,51 @@
-package com.example.BarcodeAssistant;
+package com.example.itemselector;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.vision.barcode.Barcode;
+
+import java.util.List;
+
+import info.androidhive.barcode.BarcodeReader;
+
 public class MainActivity extends AppCompatActivity {
+
+    private final String PREFERENCE_FILE = "PreferenceFile";
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        sharedPreferences = getSharedPreferences(PREFERENCE_FILE, MODE_PRIVATE);
+        if(sharedPreferences.getBoolean("session", false)){
+            super.onCreate(savedInstanceState);
 
-        // making toolbar transparent
-        transparentToolbar();
+            // making toolbar transparent
+            transparentToolbar();
 
-        setContentView(R.layout.activity_main);
+            setContentView(R.layout.activity_main);
 
-        findViewById(R.id.btn_scan).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, ScanActivity.class));
-            }
-        });
+            findViewById(R.id.btn_scan).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startActivity(new Intent(MainActivity.this, ScanActivity.class));
+                }
+            });
+        }
+        else{
+            Intent intent = new Intent(MainActivity.this, SignIn.class);
+            startActivity(intent);
+        }
     }
 
     private void transparentToolbar() {
