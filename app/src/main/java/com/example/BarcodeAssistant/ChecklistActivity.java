@@ -11,7 +11,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.BarcodeAssistant.Model.BarcodeApiResponse;
@@ -37,11 +40,14 @@ public class ChecklistActivity extends AppCompatActivity {
     private static final String apiKeyParameter="yltm9pm9fic9k6iu625f01agn4k5e2";
     private static final String TAG = ChecklistActivity.class.getSimpleName();
     private NotificationManagerCompat notificationManager;
+    private LinearLayout parentLayout;
     List<Products> products = new ArrayList<Products>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checklist);
+
+        parentLayout = (LinearLayout) findViewById(R.id.linearView);
 
         notificationManager = NotificationManagerCompat.from(this);
         ArrayList<String> barcodeList = getIntent().getStringArrayListExtra("code");
@@ -132,6 +138,17 @@ public class ChecklistActivity extends AppCompatActivity {
                             System.out.println("BARCODE: " + currentProductBarcode);
                             System.out.println("PRODUCT NAME: " + currentProductName);
                             System.out.println("PRODUCT PRICE" + currentProductName);
+
+                            CheckBox checkBox = new CheckBox(ChecklistActivity.this);
+                            checkBox.setId(i);
+                            checkBox.setText(currentProductName);
+
+                            LinearLayout.LayoutParams checkParams = new LinearLayout.LayoutParams(
+                                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                            checkParams.setMargins(10, 10, 10, 10);
+                            checkParams.gravity = Gravity.CENTER;
+
+                            parentLayout.addView(checkBox, checkParams);
 
                             createNotification(products.get(0).getBarcode_number());
                             alertDialog.setTitle("INFO");
