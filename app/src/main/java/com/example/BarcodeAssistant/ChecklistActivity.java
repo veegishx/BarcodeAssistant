@@ -29,6 +29,11 @@ import retrofit2.Response;
 import static com.example.BarcodeAssistant.App.CHANNEL_1_ID;
 
 public class ChecklistActivity extends AppCompatActivity {
+    private int i;
+    private String currentBarcode;
+    private String currentProductName = "";
+    private String currentProductPrice = "";
+    private String currentProductBarcode = "";
     private static final String apiKeyParameter="yltm9pm9fic9k6iu625f01agn4k5e2";
     private static final String TAG = ChecklistActivity.class.getSimpleName();
     private NotificationManagerCompat notificationManager;
@@ -39,27 +44,24 @@ public class ChecklistActivity extends AppCompatActivity {
         setContentView(R.layout.activity_checklist);
 
         notificationManager = NotificationManagerCompat.from(this);
-        ArrayList<String> barcode = getIntent().getStringArrayListExtra("code");
+        ArrayList<String> barcodeList = getIntent().getStringArrayListExtra("code");
+        System.out.println("LIST SIZE" + barcodeList.size());
+        getBarcodeData(barcodeList);
+    }
 
-        for (int i = 0; i < barcode.size(); i++) {
-            System.out.println("BARCODE FOUND: " + barcode.get(i));
+    public void getBarcodeData(ArrayList<String> barcodeList) {
+        for (i = 0; i < barcodeList.size(); i++) {
+            currentBarcode = barcodeList.get(i);
+            System.out.println("BARCODE FOUND: " + barcodeList.get(i));
 
             // close the activity in case of empty barcode
-            if (TextUtils.isEmpty(barcode.get(i))) {
+            if (TextUtils.isEmpty(barcodeList.get(i))) {
                 Toast.makeText(getApplicationContext(), "Barcode is empty!", Toast.LENGTH_LONG).show();
                 finish();
             }
 
             ProductApiInterface apiInterface = ProductApiClient.getBarcodeApi().create(ProductApiInterface.class);
-
-            Call<BarcodeApiResponse> call = apiInterface.getProductData(barcode.get(i), apiKeyParameter);
-            System.out.println("--- URL DEBUG INFO ---");
-
-            System.out.println(call.request().url());
-
-            int finalI = i;
-            int finalI1 = i;
-            int finalI2 = i;
+            Call<BarcodeApiResponse> call = apiInterface.getProductData(barcodeList.get(i), apiKeyParameter);
             call.enqueue(new Callback<BarcodeApiResponse>() {
 
                 @Override
@@ -72,7 +74,7 @@ public class ChecklistActivity extends AppCompatActivity {
                     switch (statusCode) {
                         case 404 :
                             alertDialog.setTitle("ERROR");
-                            alertDialog.setMessage("Barcode " + barcode.get(finalI1) + " could not be found!");
+                            alertDialog.setMessage("Barcode " + currentBarcode + " could not be found!");
                             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OKAY",
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
@@ -95,10 +97,32 @@ public class ChecklistActivity extends AppCompatActivity {
                         default:
                             System.out.println(response.body().getProducts());
                             products = response.body().getProducts();
-                            System.out.println(products.get(0).getProduct_name());
-                            createNotification(barcode.get(finalI));
+
+                            try {
+                                currentProductPrice = products.get(0).getStores().get(0).getStore_price();
+                            } catch (IndexOutOfBoundsException e) {
+                                currentProductPrice = "NOT AVAILABLE";
+                            }
+
+                            try {
+                                currentProductBarcode = products.get(0).getBarcode_number();
+                            } catch (IndexOutOfBoundsException e) {
+                                currentProductBarcode = "NOT AVAILABLE";
+                            }
+
+                            try {
+                                currentProductName = products.get(0).getProduct_name();
+                            } catch (IndexOutOfBoundsException e) {
+                                currentProductName = "NOT AVAILABLE";
+                            }
+
+                            System.out.println("BARCODE: " + currentProductBarcode);
+                            System.out.println("PRODUCT NAME: " + currentProductName);
+                            System.out.println("PRODUCT PRICE" + currentProductName);
+
+                            createNotification(products.get(0).getBarcode_number());
                             alertDialog.setTitle("Alert");
-                            alertDialog.setMessage("Barcode found: " + barcode.get(finalI2) + "for product" + products.get(0).getProduct_name());
+                            alertDialog.setMessage("Barcode found: " + currentBarcode + "for product" + currentProductName);
                             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OKAY",
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {

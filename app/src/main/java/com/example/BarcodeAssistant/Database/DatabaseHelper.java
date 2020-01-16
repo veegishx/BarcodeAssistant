@@ -45,7 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Tag table create statement
     private static final String CREATE_TABLE_PRODUCTS = "CREATE TABLE " + TABLE_PRODUCTS
             + "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_PRODUCT_NAME + " TEXT,"
-            + KEY_PRODUCT_BARCODE + " TEXT," + KEY_PRODUCT_PRICE + " REAL,"
+            + KEY_PRODUCT_BARCODE + " TEXT," + KEY_PRODUCT_PRICE + " TEXT,"
             + KEY_CREATED_AT + " DATETIME" + ")";
 
 

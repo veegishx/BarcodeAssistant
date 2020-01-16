@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.BarcodeAssistant.Database.DatabaseHelper;
 import com.google.android.gms.vision.barcode.Barcode;
 
 import java.util.ArrayList;
@@ -29,7 +30,6 @@ public class ScanActivity extends AppCompatActivity implements BarcodeReader.Bar
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
-
         doneBtn = (Button) findViewById(R.id.doneBtn);
         // get the barcode reader instance
         barcodeReader = (BarcodeReader) getSupportFragmentManager().findFragmentById(R.id.barcode_scanner);
@@ -37,14 +37,9 @@ public class ScanActivity extends AppCompatActivity implements BarcodeReader.Bar
 
     @Override
     public void onScanned(Barcode barcode) {
+
         barcodeReader.playBeep();
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // playing barcode reader beep sound
-                barcodeList.add(barcode.displayValue);
-            }
-        }, 10000);
+        barcodeList.add(barcode.displayValue);
 
         doneBtn.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -36,6 +36,7 @@
             android:text="Scan the barcode of a product to get its price and name"
             android:textColor="@android:color/white"
             android:textSize="16dp" />
+
     </LinearLayout>
 
     <Button
@@ -59,6 +60,29 @@
         android:shadowColor="#00424242"
         android:text="Scan Barcode"
         android:textColor="#3211FF"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btn_view_list"
+        android:layout_width="213dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="98dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="100dp"
+        android:background="#FFFFFF"
+        android:drawableStart="@drawable/ic_shopping_cart_red_24dp"
+        android:enabled="true"
+        android:fontFamily="sans-serif-medium"
+        android:foreground="?attr/selectableItemBackground"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:shadowColor="#00424242"
+        android:text="0 Items in List"
+        android:textColor="#FF3A52"
         android:textSize="18sp" />
 
     <TextView

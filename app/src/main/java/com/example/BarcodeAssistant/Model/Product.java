@@ -1,5 +1,7 @@
 package com.example.BarcodeAssistant.Model;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -74,6 +76,7 @@ public class Product {
 
         @SerializedName("stores")
         @Expose
+        @Nullable
         private List<Stores> stores;
 
         public Products() {}
