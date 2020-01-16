@@ -2,7 +2,6 @@ package com.example.itemselector;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,31 +20,21 @@ import info.androidhive.barcode.BarcodeReader;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final String PREFERENCE_FILE = "PreferenceFile";
-    private SharedPreferences sharedPreferences;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        sharedPreferences = getSharedPreferences(PREFERENCE_FILE, MODE_PRIVATE);
-        if(sharedPreferences.getBoolean("session", false)){
-            super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
 
-            // making toolbar transparent
-            transparentToolbar();
+        // making toolbar transparent
+        transparentToolbar();
 
-            setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
 
-            findViewById(R.id.btn_scan).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(new Intent(MainActivity.this, ScanActivity.class));
-                }
-            });
-        }
-        else{
-            Intent intent = new Intent(MainActivity.this, SignIn.class);
-            startActivity(intent);
-        }
+        findViewById(R.id.btn_scan).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, ScanActivity.class));
+            }
+        });
     }
 
     private void transparentToolbar() {
