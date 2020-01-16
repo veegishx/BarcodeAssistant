@@ -39,63 +39,66 @@ public class ChecklistActivity extends AppCompatActivity {
         setContentView(R.layout.activity_checklist);
 
         notificationManager = NotificationManagerCompat.from(this);
-        final String barcode = getIntent().getStringExtra("code");
+        ArrayList<String> barcode = getIntent().getStringArrayListExtra("code");
 
-        System.out.println("BARCODE FOUND: " + barcode);
+        for (int i = 0; i < barcode.size(); i++) {
+            System.out.println("BARCODE FOUND: " + barcode.get(i));
 
-        // close the activity in case of empty barcode
-        if (TextUtils.isEmpty(barcode)) {
-            Toast.makeText(getApplicationContext(), "Barcode is empty!", Toast.LENGTH_LONG).show();
-            finish();
-        }
+            // close the activity in case of empty barcode
+            if (TextUtils.isEmpty(barcode.get(i))) {
+                Toast.makeText(getApplicationContext(), "Barcode is empty!", Toast.LENGTH_LONG).show();
+                finish();
+            }
 
-        ProductApiInterface apiInterface = ProductApiClient.getBarcodeApi().create(ProductApiInterface.class);
+            ProductApiInterface apiInterface = ProductApiClient.getBarcodeApi().create(ProductApiInterface.class);
 
-        Call<BarcodeApiResponse> call = apiInterface.getProductData(barcode, apiKeyParameter);
-        System.out.println("--- URL DEBUG INFO ---");
+            Call<BarcodeApiResponse> call = apiInterface.getProductData(barcode.get(i), apiKeyParameter);
+            System.out.println("--- URL DEBUG INFO ---");
 
-        System.out.println(call.request().url());
+            System.out.println(call.request().url());
 
-        call.enqueue(new Callback<BarcodeApiResponse>() {
-            boolean barcodeMissing = false;
+            int finalI = i;
+            int finalI1 = i;
+            int finalI2 = i;
+            call.enqueue(new Callback<BarcodeApiResponse>() {
 
-            @Override
-            public void onResponse(Call<BarcodeApiResponse> call, Response<BarcodeApiResponse> response) {
-                System.out.println("-------------- API DEBUG INFO --------------");
-                int statusCode = response.code();
-                System.out.println("REQUEST URL: " + call.request().url());
-                System.out.println("STATUS CODE: " +response.code());
-                AlertDialog alertDialog = new AlertDialog.Builder(ChecklistActivity.this).create();
-                switch (statusCode) {
-                    case 404 :
-                        alertDialog.setTitle("ERROR");
-                        alertDialog.setMessage("Barcode " + barcode + " could not be found!");
-                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OKAY",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                        alertDialog.show();
-                        break;
-                    case 429 :
-                        alertDialog.setTitle("ERROR");
-                        alertDialog.setMessage("API LIMIT REACHED! Upgrade your plan to continue.");
-                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OKAY",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                        alertDialog.show();
-                        break;
+                @Override
+                public void onResponse(Call<BarcodeApiResponse> call, Response<BarcodeApiResponse> response) {
+                    System.out.println("-------------- API DEBUG INFO --------------");
+                    int statusCode = response.code();
+                    System.out.println("REQUEST URL: " + call.request().url());
+                    System.out.println("STATUS CODE: " +response.code());
+                    AlertDialog alertDialog = new AlertDialog.Builder(ChecklistActivity.this).create();
+                    switch (statusCode) {
+                        case 404 :
+                            alertDialog.setTitle("ERROR");
+                            alertDialog.setMessage("Barcode " + barcode.get(finalI1) + " could not be found!");
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OKAY",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alertDialog.show();
+                            break;
+                        case 429 :
+                            alertDialog.setTitle("ERROR");
+                            alertDialog.setMessage("API LIMIT REACHED! Upgrade your plan to continue.");
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OKAY",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alertDialog.show();
+                            break;
                         default:
                             System.out.println(response.body().getProducts());
                             products = response.body().getProducts();
                             System.out.println(products.get(0).getProduct_name());
-                            createNotification(barcode);
+                            createNotification(barcode.get(finalI));
                             alertDialog.setTitle("Alert");
-                            alertDialog.setMessage("Barcode found: " + barcode + "for product" + products.get(0).getProduct_name());
+                            alertDialog.setMessage("Barcode found: " + barcode.get(finalI2) + "for product" + products.get(0).getProduct_name());
                             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OKAY",
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
@@ -105,25 +108,26 @@ public class ChecklistActivity extends AppCompatActivity {
                             alertDialog.show();
                             break;
 
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<BarcodeApiResponse> call, Throwable t) {
-                // Log error here since request failed
-                Log.e(TAG, t.toString());
-                AlertDialog alertDialog = new AlertDialog.Builder(ChecklistActivity.this).create();
-                alertDialog.setTitle("ERROR");
-                alertDialog.setMessage("A connection error occured!");
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "ERROR",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.show();
-            }
-        });
+                @Override
+                public void onFailure(Call<BarcodeApiResponse> call, Throwable t) {
+                    // Log error here since request failed
+                    Log.e(TAG, t.toString());
+                    AlertDialog alertDialog = new AlertDialog.Builder(ChecklistActivity.this).create();
+                    alertDialog.setTitle("ERROR");
+                    alertDialog.setMessage("A connection error occured!");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "ERROR",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                }
+            });
+        }
     }
 
     public void createNotification(String barcode) {

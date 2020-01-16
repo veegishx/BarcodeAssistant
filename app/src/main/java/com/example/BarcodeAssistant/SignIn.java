@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.BarcodeAssistant.Database.DatabaseHelper;
-import com.example.BarcodeAssistant.Database.DatabaseHelper;
 
 public class SignIn extends AppCompatActivity {
     private EditText usernameEditText, passwordEditText;
@@ -22,9 +21,10 @@ public class SignIn extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
         sharedPreferences = getSharedPreferences(PREFERENCE_FILE, MODE_PRIVATE);
         if(!(sharedPreferences.getBoolean("session", false))) {
-            super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_sign_in);
 
             db = new DatabaseHelper(this);
