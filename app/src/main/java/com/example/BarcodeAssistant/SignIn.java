@@ -1,4 +1,4 @@
-package com.example.itemselector;
+package com.example.BarcodeAssistant;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,7 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.itemselector.Database.DatabaseHelper;
+import com.example.BarcodeAssistant.Database.DatabaseHelper;
+import com.example.BarcodeAssistant.Database.DatabaseHelper;
 
 public class SignIn extends AppCompatActivity {
     private EditText usernameEditText, passwordEditText;

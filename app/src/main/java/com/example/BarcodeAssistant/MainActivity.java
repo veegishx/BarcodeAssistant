@@ -1,4 +1,4 @@
-package com.example.itemselector;
+package com.example.BarcodeAssistant;
 
 import android.app.Activity;
 import android.content.Intent;
