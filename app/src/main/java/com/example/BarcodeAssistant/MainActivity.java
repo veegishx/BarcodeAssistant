@@ -5,11 +5,18 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.vision.barcode.Barcode;
+
+import java.util.List;
+
+import info.androidhive.barcode.BarcodeReader;
 
 public class MainActivity extends AppCompatActivity {
 
