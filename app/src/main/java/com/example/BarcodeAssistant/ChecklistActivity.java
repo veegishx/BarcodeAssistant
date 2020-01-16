@@ -46,7 +46,20 @@ public class ChecklistActivity extends AppCompatActivity {
         notificationManager = NotificationManagerCompat.from(this);
         ArrayList<String> barcodeList = getIntent().getStringArrayListExtra("code");
         System.out.println("LIST SIZE" + barcodeList.size());
-        getBarcodeData(barcodeList);
+        if (barcodeList.size() > 0) {
+            getBarcodeData(barcodeList);
+        } else {
+            AlertDialog alertDialog = new AlertDialog.Builder(ChecklistActivity.this).create();
+            alertDialog.setTitle("INFO");
+            alertDialog.setMessage("No barcodes scanned.");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OKAY",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
+        }
     }
 
     public void getBarcodeData(ArrayList<String> barcodeList) {
@@ -121,7 +134,7 @@ public class ChecklistActivity extends AppCompatActivity {
                             System.out.println("PRODUCT PRICE" + currentProductName);
 
                             createNotification(products.get(0).getBarcode_number());
-                            alertDialog.setTitle("Alert");
+                            alertDialog.setTitle("INFO");
                             alertDialog.setMessage("Barcode found: " + currentBarcode + "for product" + currentProductName);
                             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OKAY",
                                     new DialogInterface.OnClickListener() {

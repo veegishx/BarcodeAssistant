@@ -17,6 +17,17 @@
         android:text="DONE"
         android:textColor="#3211FF" />
 
+    <Button
+        android:id="@+id/cancelBtn"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="150dp"
+        android:layout_marginTop="550dp"
+        android:backgroundTint="#FF3536"
+        android:drawableStart="@drawable/ic_clear_black_24dp"
+        android:text="CANCEL"
+        android:textColor="#FFFFFF" />
+
     <fragment
         android:id="@+id/barcode_scanner"
         android:name="info.androidhive.barcode.BarcodeReader"
