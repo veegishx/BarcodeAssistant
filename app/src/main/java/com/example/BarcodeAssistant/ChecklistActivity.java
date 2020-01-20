@@ -73,6 +73,7 @@ public class ChecklistActivity extends AppCompatActivity {
     public void getBarcodeData(ArrayList<String> barcodeList) {
         for (i = 0; i < barcodeList.size(); i++) {
             currentBarcode = barcodeList.get(i);
+            createNotification(currentBarcode);
             System.out.println("BARCODE FOUND: " + barcodeList.get(i));
 
             // close the activity in case of empty barcode
