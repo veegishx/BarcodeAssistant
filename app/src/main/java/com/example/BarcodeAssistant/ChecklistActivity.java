@@ -7,14 +7,13 @@ import androidx.core.app.NotificationManagerCompat;
 
 import android.app.Notification;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.BarcodeAssistant.Model.BarcodeApiResponse;
@@ -41,6 +40,8 @@ public class ChecklistActivity extends AppCompatActivity {
     private static final String TAG = ChecklistActivity.class.getSimpleName();
     private NotificationManagerCompat notificationManager;
     private LinearLayout parentLayout;
+    private TextView totalPrice;
+    private float totalPriceValue = 0;
     List<Products> products = new ArrayList<Products>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class ChecklistActivity extends AppCompatActivity {
         setContentView(R.layout.activity_checklist);
 
         parentLayout = (LinearLayout) findViewById(R.id.linearView);
+        totalPrice = (TextView) findViewById(R.id.totalPrice);
 
         notificationManager = NotificationManagerCompat.from(this);
         ArrayList<String> barcodeList = getIntent().getStringArrayListExtra("code");
@@ -118,7 +120,8 @@ public class ChecklistActivity extends AppCompatActivity {
                             products = response.body().getProducts();
 
                             try {
-                                currentProductPrice = products.get(0).getStores().get(0).getStore_price();
+                                int size = products.get(0).getStores().size();
+                                currentProductPrice = products.get(0).getStores().get(size - 1).getStore_price();
                             } catch (IndexOutOfBoundsException e) {
                                 currentProductPrice = "NOT AVAILABLE";
                             }
@@ -137,10 +140,13 @@ public class ChecklistActivity extends AppCompatActivity {
 
                             System.out.println("BARCODE: " + currentProductBarcode);
                             System.out.println("PRODUCT NAME: " + currentProductName);
-                            System.out.println("PRODUCT PRICE" + currentProductName);
+                            System.out.println("PRODUCT PRICE" + currentProductPrice);
+
+                            totalPriceValue = totalPriceValue + Float.parseFloat(currentProductPrice);
 
                             CheckBox checkBox = new CheckBox(ChecklistActivity.this);
                             checkBox.setId(i);
+                            checkBox.setChecked(true);
                             checkBox.setText(currentProductName);
 
                             LinearLayout.LayoutParams checkParams = new LinearLayout.LayoutParams(
@@ -148,18 +154,10 @@ public class ChecklistActivity extends AppCompatActivity {
                             checkParams.setMargins(10, 10, 10, 10);
                             checkParams.gravity = Gravity.CENTER;
 
+                            totalPrice.setText(String.valueOf(totalPriceValue));
+
                             parentLayout.addView(checkBox, checkParams);
 
-                            createNotification(products.get(0).getBarcode_number());
-                            alertDialog.setTitle("INFO");
-                            alertDialog.setMessage("Barcode found: " + currentBarcode + "for product" + currentProductName);
-                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OKAY",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    });
-                            alertDialog.show();
                             break;
 
                     }
